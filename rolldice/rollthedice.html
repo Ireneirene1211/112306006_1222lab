@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dice Roller</title>
+    <style>
+        img {
+            width: 50px;
+            height: 50px;
+            margin: 5px;
+        }
+
+        table {
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table, th, td {
+            border: 1px solid black;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: center;
+        }
+    </style>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Reset the displayed results when the page is loaded
+            resetPage();
+            // Display the dice when the page is loaded
+            rollDice();
+        });
+
+        function resetPage() {
+            // Clear displayed elements
+            var diceOnLoadContainer = document.getElementById("diceOnLoadContainer");
+            diceOnLoadContainer.innerHTML = "";
+
+            var diceContainer = document.getElementById("diceContainer");
+            diceContainer.innerHTML = "";
+
+            var probabilitiesTable = document.getElementById("probabilitiesTable");
+            probabilitiesTable.innerHTML = "";
+        }
+
+        function displayDiceOnLoad(results) {
+            // Display the dice images on load
+            var diceOnLoadContainer = document.getElementById("diceOnLoadContainer");
+            diceOnLoadContainer.innerHTML = ""; // Clear previous results
+
+            for (var i = 0; i < results.length; i++) {
+                var img = document.createElement("img");
+                img.src = "die" + results[i] + ".png"; // Assuming you have dice images named die1.png, die2.png, etc.
+                img.alt = "Dice " + results[i];
+                diceOnLoadContainer.appendChild(img);
+
+                // Add a line break after every six dice
+                if ((i + 1) % 6 === 0) {
+                    diceOnLoadContainer.appendChild(document.createElement("br"));
+                }
+            }
+        }
+
+        function rollDice() {
+            // Number of dice to roll
+            var numberOfDice = 12;
+
+            // Array to store the results of each die roll
+            var results = [];
+
+            // Roll each die and store the result
+            for (var i = 0; i < numberOfDice; i++) {
+                var rollResult = Math.floor(Math.random() * 6) + 1; // Random number between 1 and 6
+                results.push(rollResult);
+            }
+
+            // Count occurrences of each face
+            var faceCounts = [0, 0, 0, 0, 0, 0]; // Array to count occurrences of each face
+
+            for (var i = 0; i < numberOfDice; i++) {
+                faceCounts[results[i] - 1]++;
+            }
+
+            // Display the dice on load
+            displayDiceOnLoad(results);
+
+            // Display the probability of each face in a table
+            var probabilitiesTable = document.getElementById("probabilitiesTable");
+            probabilitiesTable.innerHTML = ""; // Clear previous results
+
+            // Add the first row with headers
+            var headerRow = probabilitiesTable.insertRow(0);
+            var faceHeader = headerRow.insertCell(0);
+            faceHeader.innerHTML = "<b>Face</b>";
+
+            var percentageHeader = headerRow.insertCell(1);
+            percentageHeader.innerHTML = "<b>Percentage</b>";
+
+            // Add rows with results
+            for (var i = 0; i < 6; i++) {
+                var row = probabilitiesTable.insertRow(i + 1);
+
+                var faceCell = row.insertCell(0);
+                faceCell.innerHTML = "Face " + (i + 1);
+
+                var percentageCell = row.insertCell(1);
+                var probability = (faceCounts[i] / numberOfDice) * 100;
+                percentageCell.innerHTML = probability.toFixed(2) + "%";
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>Dice Roller</h1>
+    <div id="diceOnLoadContainer"></div>
+    <button onclick="rollDice()">Roll 12 Dice</button>
+    <div id="diceContainer"></div>
+    <table id="probabilitiesTable"></table>
+</body>
+</html>
